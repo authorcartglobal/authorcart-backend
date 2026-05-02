@@ -89,8 +89,34 @@ function updateCart() {
 
   document.getElementById("total").textContent = "Total: ₦" + total;
 }
-
 </script>
 
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+<script>
+function payNow() {
+  let total = 0;
+
+  cart.forEach(item => {
+    total += item.price;
+  });
+
+  let handler = PaystackPop.setup({
+    key: "YOUR_PUBLIC_KEY_HERE",
+    email: "customer@email.com",
+    amount: total * 100, // Paystack uses kobo
+    currency: "NGN",
+    callback: function(response) {
+      alert("Payment successful! Ref: " + response.reference);
+    },
+    onClose: function() {
+      alert("Payment cancelled");
+    }
+  });
+
+  handler.openIframe();
+}
+</script> 
+  
 </body>
 </html>
