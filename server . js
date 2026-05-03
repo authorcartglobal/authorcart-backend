@@ -1,56 +1,12 @@
 const express = require("express");
-const cors = require("cors");
-
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Test route
 app.get("/", (req, res) => {
-  res.send("AUTHORCART API is running 🚀");
+  res.send("Working 🚀");
 });
 
-// Sample products (temporary database)
-let products = [];
-
-// Add product
-app.post("/products", (req, res) => {
-  const { name, price } = req.body;
-
-  if (!name || !price) {
-    return res.status(400).json({ message: "Name and price required" });
-  }
-
-  const newProduct = {
-    id: Date.now(),
-    name,
-    price
-  };
-
-  products.push(newProduct);
-
-  res.status(201).json(newProduct);
-});
-
-// Get all products
-app.get("/products", (req, res) => {
-  res.json(products);
-});
-
-// Delete product
-app.delete("/products/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-
-  products = products.filter(p => p.id !== id);
-
-  res.json({ message: "Product deleted" });
-});
-
-// PORT (important for deployment)
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+  console.log("Running on " + PORT);
 });
