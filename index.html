@@ -107,7 +107,7 @@ function payNow() {
     amount: total * 100, // Paystack uses kobo
     currency: "NGN",
   callback: function(response) {
-  fetch("https://YOUR-RENDER-LINK/order", 
+  fetch("https://authorcart-backend.onrender.com/order",
   {
       method: "POST",
       headers: {
