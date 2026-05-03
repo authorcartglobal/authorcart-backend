@@ -106,8 +106,22 @@ function payNow() {
     email: "customer@email.com",
     amount: total * 100, // Paystack uses kobo
     currency: "NGN",
-    callback: function(response) {
-      alert("Payment successful! Ref: " + response.reference);
+  callback: function(response) {
+  fetch("https://YOUR-RENDER-LINK/order", 
+  {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        cart: cart,
+        reference: response.reference
+      })
+    });
+
+    alert("Payment successful and order 
+  saved!");
+  }
     },
     onClose: function() {
       alert("Payment cancelled");
