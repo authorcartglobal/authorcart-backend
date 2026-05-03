@@ -1,143 +1,148 @@
-‎<!DOCTYPE html>
-‎<html>
-‎<head>
-‎  <title>AuthorCart</title>
-‎  <style>
-‎    body {
-‎      font-family: Arial;
-‎      margin: 0;
-‎      background: #f5f5f5;
-‎    }
-‎    header {
-‎      background: black;
-‎      color: white;
-‎      padding: 15px;
-‎      text-align: center;
-‎      font-size: 20px;
-‎    }
-‎    .products {
-‎      display: grid;
-‎      grid-template-columns: repeat(2, 1fr);
-‎      gap: 10px;
-‎      padding: 10px;
-‎    }
-‎    .card {
-‎      background: white;
-‎      padding: 10px;
-‎      border-radius: 10px;
-‎    }
-‎    button {
-‎      background: orange;
-‎      border: none;
-‎      padding: 8px;
-‎      width: 100%;
-‎      color: white;
-‎      border-radius: 5px;
-‎    }
-‎  </style>
-‎</head>
-‎
-‎<body>
-‎
-‎<header>🛒 AuthorCart</header>
-‎
-‎<!-- CART -->
-‎<div id="cart" style="padding:10px; background:white; margin:10px; border-radius:10px;">
-‎  <h3>🛒 Cart</h3>
-‎  <ul id="cart-items"></ul>
-‎  <p id="total">Total: ₦0</p>
-‎  <button onclick="payNow()">Checkout</button>
-‎</div>
-‎
-‎<!-- PRODUCTS -->
-‎<div class="products">
-‎
-‎  <div class="card">
-‎    <h3>Product 1</h3>
-‎    <p>₦5,000</p>
-‎    <button onclick="addToCart('Product 1', 5000)">Add to Cart</button>
-‎  </div>
-‎
-‎  <div class="card">
-‎    <h3>Product 2</h3>
-‎    <p>₦10,000</p>
-‎    <button onclick="addToCart('Product 2', 10000)">Add to Cart</button>
-‎  </div>
-‎
-‎</div>
-‎
-‎<!-- CART SCRIPT -->
-‎<script>
-‎let cart = [];
-‎
-‎function addToCart(product, price) {
-‎  cart.push({ product, price });
-‎  updateCart();
-‎}
-‎
-‎function updateCart() {
-‎  let cartList = document.getElementById("cart-items");
-‎  let total = 0;
-‎
-‎  cartList.innerHTML = "";
-‎
-‎  cart.forEach(item => {
-‎    let li = document.createElement("li");
-‎    li.textContent = item.product + " - ₦" + item.price;
-‎    cartList.appendChild(li);
-‎    total += item.price;
-‎  });
-‎
-‎  document.getElementById("total").textContent = "Total: ₦" + total;
-‎}
-‎</script>
-‎
-‎<!-- PAYSTACK SCRIPT (IMPORTANT: separate) -->
-‎<script src="https://js.paystack.co/v1/inline.js"></script>
-‎
-‎<script>
-‎function payNow() {
-‎  let total = 0;
-‎
-‎  cart.forEach(item => {
-‎    total += item.price;
-‎  });
-‎
-‎  if (total === 0) {
-‎    alert("Cart is empty!");
-‎    return;
-‎  }
-‎
-‎  let handler = PaystackPop.setup({
-‎    key: "pk_test_068e6af4a0bc50dfa629ec58d7c0e825cb4f07e5", // 🔴 REPLACE THIS
-‎    email: "test@email.com",
-‎    amount: total * 100,
-‎    currency: "NGN",
-‎
-‎    callback: function(response) {
-‎      fetch("https://authorcart-backend.onrender.com", {
-‎        method: "POST",
-‎        headers: {
-‎          "Content-Type": "application/json"
-‎        },
-‎        body: JSON.stringify({
-‎          cart: cart,
-‎          reference: response.reference
-‎        })
-‎      });
-‎
-‎      alert("Payment successful and order saved!");
-‎    },
-‎
-‎    onClose: function() {
-‎      alert("Payment cancelled");
-‎    }
-‎  });
-‎
-‎  handler.openIframe();
-‎}
-‎</script>
-‎
-‎</body>
-‎</html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AuthorCart</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: #f5f5f5;
+    }
+
+    header {
+      background: black;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .cart-box {
+      padding: 10px;
+      background: white;
+      margin: 10px;
+      border-radius: 10px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .card {
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    button {
+      background: orange;
+      border: none;
+      padding: 8px;
+      width: 100%;
+      color: white;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>🛒 AuthorCart</header>
+
+<div class="cart-box">
+  <h3>🛒 Cart</h3>
+  <ul id="cart-items"></ul>
+  <p id="total">Total: ₦0</p>
+  <button onclick="payNow()">Checkout</button>
+</div>
+
+<div class="products">
+
+  <div class="card">
+    <h3>Product 1</h3>
+    <p>₦5,000</p>
+    <button onclick="addToCart('Product 1', 5000)">Add to Cart</button>
+  </div>
+
+  <div class="card">
+    <h3>Product 2</h3>
+    <p>₦10,000</p>
+    <button onclick="addToCart('Product 2', 10000)">Add to Cart</button>
+  </div>
+
+</div>
+
+<script>
+let cart = [];
+
+function addToCart(product, price) {
+  cart.push({ product, price });
+  updateCart();
+}
+
+function updateCart() {
+  let cartList = document.getElementById("cart-items");
+  let total = 0;
+
+  cartList.innerHTML = "";
+
+  cart.forEach(item => {
+    let li = document.createElement("li");
+    li.textContent = item.product + " - ₦" + item.price;
+    cartList.appendChild(li);
+
+    total += item.price;
+  });
+
+  document.getElementById("total").textContent = "Total: ₦" + total;
+}
+</script>
+
+<!-- PAYSTACK -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+<script>
+function payNow() {
+  let total = 0;
+
+  cart.forEach(item => {
+    total += item.price;
+  });
+
+  let handler = PaystackPop.setup({
+    key: "PUT_YOUR_PUBLIC_KEY_HERE",
+    email: "test@email.com",
+    amount: total * 100,
+    currency: "NGN",
+
+    callback: function(response) {
+      fetch("https://YOUR-RENDER-LINK/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          cart: cart,
+          reference: response.reference
+        })
+      });
+
+      alert("Payment successful and order saved!");
+    },
+
+    onClose: function() {
+      alert("Payment cancelled");
+    }
+  });
+
+  handler.openIframe();
+}
+</script>
+
+</body>
+</html>
 ‎
