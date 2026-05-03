@@ -120,7 +120,7 @@ function payNow() {
     currency: "NGN",
 
     callback: function(response) {
-      fetch("https://YOUR-RENDER-LINK/order", {
+      fetch("https://authorcart-backend.onrender.com/order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
