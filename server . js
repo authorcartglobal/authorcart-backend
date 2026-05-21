@@ -1,8 +1,35 @@
 const express = require("express");
+const db = require("./firebaseAdmin");
+
 const app = express();
+
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Working 🚀");
+});
+
+// Save order to Firestore
+app.post("/save-order", async (req, res) => {
+  try {
+    const order = req.body;
+
+    const docRef = await db.collection("orders").add({
+      ...order,
+      createdAt: new Date()
+    });
+
+    res.json({
+      success: true,
+      orderId: docRef.id
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
