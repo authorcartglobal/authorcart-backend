@@ -1,6 +1,4 @@
 const express = require("express");
-const db = require("./firebaseAdmin");
-
 const app = express();
 
 app.use(express.json());
@@ -9,22 +7,24 @@ app.get("/", (req, res) => {
   res.send("Working 🚀");
 });
 
-// Save order to Firestore
-app.post("/save-order", async (req, res) => {
+app.post("/order", async (req, res) => {
   try {
-    const order = req.body;
+    const db = require("./firebaseAdmin");
 
     const docRef = await db.collection("orders").add({
-      ...order,
+      cart: req.body.cart,
+      reference: req.body.reference,
       createdAt: new Date()
     });
 
     res.json({
       success: true,
-      orderId: docRef.id
+      id: docRef.id
     });
+
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       success: false,
       error: error.message
